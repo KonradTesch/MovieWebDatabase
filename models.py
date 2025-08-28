@@ -1,8 +1,6 @@
 from sqlalchemy import create_engine
 from flask_sqlalchemy import SQLAlchemy
 
-engine = create_engine("sqlite:///db.sql")
-
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -16,4 +14,4 @@ class Movie(db.Model):
     year = db.Column(db.Integer)
     director = db.Column(db.String(100))
     poster_url = db.Column(db.String(200))
-    user_id = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
