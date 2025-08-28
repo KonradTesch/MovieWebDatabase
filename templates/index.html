@@ -2,12 +2,17 @@
 
 {% block title %}Users - My Movie Database{% endblock %}
 
+{% block nav %}{% endblock %}
+
+
 {% block content %}
 <h2>Existing Users</h2>
 <ul class="user-list">
     {% for user in users %}
-        <li class = "user-entry">
-            <a href="/users/{{ user.id }}/movies", class="btn_user">{{ user.name }}</a>
+        <li class="user-entry">
+            <a href="{{ url_for('handle_user_movies', user_id=user.id) }}" class="btn_user">
+                {{ user.name }}
+            </a>
         </li>
     {% else %}
         <li>No users yet.</li>
@@ -15,9 +20,9 @@
 </ul>
 
 <h2>Create a New User</h2>
-<form action="{{ url_for('add_user') }}" method="POST">
+<form action="{{ url_for('add_user') }}" method="POST" class="form-user">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" required>
-    <button type="submit">Add User</button>
+    <button type="submit" class="btn">Add User</button>
 </form>
 {% endblock %}
