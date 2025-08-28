@@ -33,8 +33,7 @@ class DataManager:
         db.session.add(new_user)
         db.session.commit()
 
-    @staticmethod
-    def create_movie(title, year, director, poster_url, user_id):
+    def create_movie(self, title, year, director, poster_url, user_id):
         new_movie = Movie(
             title=title,
             year=year,
@@ -44,15 +43,20 @@ class DataManager:
         db.session.add(new_movie)
         db.session.commit()
 
-    @staticmethod
-    def delete_movie(movie_id):
+    def delete_movie(self, movie_id):
         db.session.query(Movie).filter_by(id=movie_id).delete()
         db.session.commit()
 
-    @staticmethod
-    def get_users():
+    def get_users(self):
         users = db.session.query(User).all()
         return users
+
+
+    def get_user_movies(self, user_id):
+        movies = db.session.query(Movie).filter_by(user_id=user_id).all()
+
+    def delete_user_movies(self,user_id, movie_id):
+        db.session.query(Movie).filter_by(id=movie_id, user_id=user_id).delete()
 
     def add_movie(self,user_id, title, year = None):
 

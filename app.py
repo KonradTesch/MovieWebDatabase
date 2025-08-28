@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for
 import os
 from models import db, User, Movie
 from data_manager import DataManager
@@ -16,20 +16,29 @@ data_manager = DataManager()
 
 @app.route('/')
 def home():
-    return "Welcome to MoviWeb App!"
-
-@app.route('/users')
-def list_users():
     users = data_manager.get_users()
-    return str(users)  # Temporarily returning users as a string
+    return render_template("index.html", users=users)
+
 
 @app.route('/users', methods=['POST'])
 def add_user():
-    pass
+    name = request.form.get('name')
+
+    data_manager.create_user(name)
+    return redirect(url_for('home'))
 
 @app.route('/users/<int:user_id>/movies', methods=['GET', 'POST'])
 def handle_user_movies(user_id):
-    pass
+    if request.method == 'POST':
+        title = request.form.get('title')
+        year = request.form.get('year')
+
+        data_manager.add_movie(user_id, title, year)
+        return redirect(url_for('handle_user_movies', user_id=user_id))
+    #get request
+    movies = data_manager.get_user_movies(user_id)
+
+    return render_template(movies.html, movies=movies)
 
 
 @app.route('/users/<int:user_id>/movies/<int:movie_id>/update', methods=['POST'])
@@ -39,7 +48,13 @@ def update_user_movie(user_id, movie_id):
 
 @app.route('/users/<int:user_id>/movies/<int:movie_id>/delete', methods=['POST'])
 def delete_user_movie(user_id, movie_id):
-    pass
+    data_manager.delete_user_movie(user_id, movie_id)
+    return redirect(url_for('handle_user_movies', user_id=user_id))
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
 
 
 if __name__ == '__main__':
